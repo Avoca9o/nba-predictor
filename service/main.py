@@ -1,10 +1,8 @@
-from fastapi import FastAPI, Request
-import json
+from fastapi import FastAPI, Request, HTTPException
 import predictor
 import repo
 
 app = FastAPI(title="NBA Predictor App", version="1.0")
-
 
 @app.get("/")
 def read_root():
@@ -12,22 +10,22 @@ def read_root():
 
 @app.post("/forward")
 async def forward(request: Request):
-    input = None
+    body = None
     try:
-        input = json.loads(await request.body())
+        body = await request.json()
     except Exception:
-        return {"error": "Invalid JSON"}, 400
-    
-    try:
-        prediction = predictor.get_prediction(input)
-    except Exception:
-        return {"error": "Failed to get prediction"}, 403
+        raise HTTPException(status_code=400, detail="Invalid JSON format")
 
     try:
-        repo.add_prediction(str(input), str(prediction))
+        prediction = predictor.get_prediction(body)
+    except Exception as e:
+        raise HTTPException(status_code=403, detail=f"Failed to get prediction: {e}")
+
+    try:
+        repo.add_prediction(str(body), str(prediction))
     except Exception:
-        return {"error": "Failed to add prediction"}, 500
-    
+        raise HTTPException(status_code=500, detail="Failed to add prediction")
+
     return {"prediction": prediction}
 
 @app.get("/history")
