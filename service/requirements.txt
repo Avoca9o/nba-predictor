@@ -5,3 +5,9 @@ pydantic
 numpy
 pandas
 scikit-learn
+python-jose
+cryptography
+passlib
+bcrypt
+python-multipart
+python-dotenv
