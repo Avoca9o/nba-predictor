@@ -8,6 +8,6 @@ scikit-learn
 python-jose
 cryptography
 passlib
-bcrypt
+bcrypt<5.0
 python-multipart
 python-dotenv

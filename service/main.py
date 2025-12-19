@@ -4,12 +4,30 @@ from datetime import timedelta
 import predictor
 import repo
 import auth
+import config
 
 app = FastAPI(title="NBA Predictor App", version="1.0")
 
+
+@app.on_event("startup")
+async def startup_event():
+    if not repo.has_admin():
+        if config.ADMIN_PASSWORD:
+            try:
+                repo.create_user(
+                    username=config.ADMIN_USERNAME,
+                    password=config.ADMIN_PASSWORD,
+                    role='admin'
+                )
+                print(f'Default admin "{config.ADMIN_USERNAME}" created successfully')
+            except Exception as e:
+                print(f'Failed to create default admin: {e}')
+        else:
+            print('Warning: No admin found and ADMIN_PASSWORD not set. Please create admin manually.')
+
 class TokenRequest(BaseModel):
     username: str
-    role: str
+    password: str
 
 @app.get("/")
 def read_root():
@@ -18,9 +36,22 @@ def read_root():
 
 @app.post("/token")
 async def login(token_request: TokenRequest):
+    user = repo.get_user_by_username(token_request.username)
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="Incorrect username or password"
+        )
+    
+    if not repo.verify_password(token_request.password, user.password_hash):
+        raise HTTPException(
+            status_code=401,
+            detail="Incorrect username or password"
+        )
+    
     access_token_expires = timedelta(minutes=auth.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = auth.create_access_token(
-        data={"sub": token_request.username, "role": token_request.role},
+        data={"sub": user.username, "role": user.role},
         expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
