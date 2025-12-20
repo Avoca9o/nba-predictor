@@ -5,9 +5,12 @@ import predictor
 import repo
 import auth
 import config
+import stats_collector
+import time
 
 app = FastAPI(title="NBA Predictor App", version="1.0")
-
+time_collector = stats_collector.DurationStorage()
+req_collector = stats_collector.RequestsStorage()
 
 @app.on_event("startup")
 async def startup_event():
@@ -58,22 +61,29 @@ async def login(token_request: TokenRequest):
 
 @app.post("/forward")
 async def forward(request: Request):
+    start_time = time.perf_counter()
     body = None
     try:
         body = await request.json()
     except Exception:
+        time_collector.add(time.perf_counter() - start_time)
         raise HTTPException(status_code=400, detail="Invalid JSON format")
+    
+    req_collector.add(len(str(body)))
 
     try:
         prediction = predictor.get_prediction(body)
     except Exception as e:
+        time_collector.add(time.perf_counter() - start_time)
         raise HTTPException(status_code=403, detail=f"Failed to get prediction: {e}")
 
     try:
         repo.add_prediction(str(body), str(prediction))
     except Exception:
+        time_collector.add(time.perf_counter() - start_time)
         raise HTTPException(status_code=500, detail="Failed to add prediction")
 
+    time_collector.add(time.perf_counter() - start_time)
     return {"prediction": prediction}
 
 @app.get("/history")
@@ -95,4 +105,10 @@ async def delete_history(current_admin: auth.TokenData = Depends(auth.get_curren
 
 @app.get("/stats")
 async def stats(current_admin: auth.TokenData = Depends(auth.get_current_admin)):
-    return {"message": "Not implemented"}
+    return {
+        "mean": f"{time_collector.get_mean():.6f}s",
+        "50 quantile": f"{time_collector.get_percentile(50):.6f}s",
+        "95 quantile": f"{time_collector.get_percentile(95):.6f}s",
+        "99 quantile": f"{time_collector.get_percentile(99):.6f}s",
+        "mena req length": req_collector.get_req_data()
+    }
