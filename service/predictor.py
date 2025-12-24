@@ -1,6 +1,4 @@
-import random
 import pandas as pd
-import json
 import pickle
 
 preprocessor = None
@@ -20,4 +18,4 @@ def get_prediction(data: dict):
     df = pd.DataFrame(df, columns=columns)
 
     prediction = predictor.predict(df)
-    return int(prediction)
+    return int(prediction[0])
