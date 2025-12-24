@@ -22,6 +22,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+Далее в самом проекте необходим создать `.env` файл (можно скопировать данные в него из `.env_example` файла)
 Запустите сервер:
 
 ```
@@ -38,28 +39,6 @@ uvicorn main:app --reload
 ## CURL
 
 Как оказалось, у коллекции постамана могут быть проблемы с доступом, поэтому осталвяем гайд, как подянть, запустить и протестировать приложения у себя лкоально:
-
-### Запуск
-
-```bash
-python3 -m venv venv
-```
-
-```bash
-source venv/bin/activate
-```
-
-```bash
-pip install -r requirements.txt
-```
-
-Далее в самом проекте необходим создать `.env` файл (можно скопировать данные в него из `.env_example` файла)
-
-```bash
-uvicorn main:app --reload
-```
-
-Приложение будет доступно по адресу http://127.0.0.1:8000
 
 ### Тестирование
 
@@ -100,8 +79,8 @@ curl -X GET "http://localhost:8000/history" \
 
 Ожидаемый ответ:
 
-```
-{"predictions":["Prediction(id=1, input={'home_over_away_wins_diff_10': -3, 'form_5_diff': -4, 'form_15_diff': 1, 'last_home_matches_count_diff': 2, 'days_off_diff': -1, 'is_last_season_champion_diff': 1}, prediction=1, prediction_date=2025-12-19 00:33:03.179709)",...}
+```json
+{"predictions":["Prediction(id=1, input={'home_over_away_wins_diff_10': -3, 'form_5_diff': -4, 'form_15_diff': 1, 'last_home_matches_count_diff': 2, 'days_off_diff': -1, 'is_last_season_champion_diff': 1}, prediction=1, prediction_date=2025-12-19 00:33:03.179709)",...]}
 ```
 
 - Удалить историю:

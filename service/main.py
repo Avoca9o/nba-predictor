@@ -7,6 +7,7 @@ import auth
 import config
 import stats_collector
 import time
+import logging
 
 app = FastAPI(title="NBA Predictor App", version="1.0")
 time_collector = stats_collector.DurationStorage()
@@ -60,13 +61,12 @@ async def login(token_request: TokenRequest):
     return {"access_token": access_token, "token_type": "bearer"}
 
 @app.post("/forward")
+@time_collector.measure()
 async def forward(request: Request):
-    start_time = time.perf_counter()
     body = None
     try:
         body = await request.json()
-    except Exception:
-        time_collector.add(time.perf_counter() - start_time)
+    except Exception as e:
         raise HTTPException(status_code=400, detail="Invalid JSON format")
     
     req_collector.add(len(str(body)))
@@ -74,16 +74,13 @@ async def forward(request: Request):
     try:
         prediction = predictor.get_prediction(body)
     except Exception as e:
-        time_collector.add(time.perf_counter() - start_time)
         raise HTTPException(status_code=403, detail=f"Failed to get prediction: {e}")
 
     try:
         repo.add_prediction(str(body), str(prediction))
     except Exception:
-        time_collector.add(time.perf_counter() - start_time)
         raise HTTPException(status_code=500, detail="Failed to add prediction")
 
-    time_collector.add(time.perf_counter() - start_time)
     return {"prediction": prediction}
 
 @app.get("/history")
@@ -105,10 +102,15 @@ async def delete_history(current_admin: auth.TokenData = Depends(auth.get_curren
 
 @app.get("/stats")
 async def stats(current_admin: auth.TokenData = Depends(auth.get_current_admin)):
+    mean = time_collector.get_mean()
+    p50 = time_collector.get_percentile(50)
+    p95 = time_collector.get_percentile(95)
+    p99 = time_collector.get_percentile(99)
+    
     return {
-        "mean": f"{time_collector.get_mean():.6f}s",
-        "50 quantile": f"{time_collector.get_percentile(50):.6f}s",
-        "95 quantile": f"{time_collector.get_percentile(95):.6f}s",
-        "99 quantile": f"{time_collector.get_percentile(99):.6f}s",
-        "mena req length": req_collector.get_req_data()
+        "mean": f"{mean:.6f}s" if mean is not None else "N/A",
+        "50 quantile": f"{p50:.6f}s" if p50 is not None else "N/A",
+        "95 quantile": f"{p95:.6f}s" if p95 is not None else "N/A",
+        "99 quantile": f"{p99:.6f}s" if p99 is not None else "N/A",
+        "mean req length": req_collector.get_req_data()
     }
