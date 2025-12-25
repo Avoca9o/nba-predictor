@@ -1,0 +1,10 @@
+venv/
+
+__pycache__/
+
+.env
+
+*.db
+*.db-journal
+
+alembic/versions/__pycache__/
