@@ -19,8 +19,6 @@ def get_prediction(data: dict):
     team_abbreviation_home = data['home_team_abbreaviation']
     team_abbreviation_away = data['away_team_abbreaviation']
 
-    print(abbr_id_mapper.keys())
-
     team_id_home = abbr_id_mapper[team_abbreviation_home]
     team_id_away = abbr_id_mapper[team_abbreviation_away]
 
