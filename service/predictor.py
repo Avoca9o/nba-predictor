@@ -27,6 +27,9 @@ def get_prediction(data: dict):
         last_row = current_data[mask].iloc[[-1]]
         last_row = last_row.drop(columns=['home_team_id', 'away_team_id'])
         prediction = predictor.predict(last_row)
-        return int(prediction)
+        if int(prediction) > 0:
+            return f'{team_abbreviation_home} will win'
+        else:
+            return f'{team_abbreviation_away} will win'
     else:
-        return -1
+        return "Invalid team abbreaviations"
