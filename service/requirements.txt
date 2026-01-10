@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+sqlalchemy
+alembic
+pydantic
+numpy
+pandas
+scikit-learn
+python-jose
+cryptography
+passlib
+bcrypt<5.0
+python-multipart
+python-dotenv
