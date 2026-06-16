@@ -57,18 +57,23 @@ uvicorn main:app --reload
 ```bash
 curl 'http://127.0.0.1:8000/forward' \
 -X POST \
+-d 'curl 'http://127.0.0.1:8000/forward' -vvv \
+-X POST \
 -d '{
   "home_over_away_wins_diff_10": -3,
   "form_5_diff": -4,
   "form_15_diff": 1,
   "last_home_matches_count_diff": 2,
   "days_off_diff": -1,
-  "is_last_season_champion_diff": 1
+  "is_last_season_champion_diff": 1, 
+  "home_team_abbreaviation": "LAL",
+  "away_team_abbreaviation": "CIN"
 }'
+'
 ```
 
 Ожидаемый ответ:
-`{"prediction":1}`
+`{"prediction":"LAL will win"}`
 
 - Получение JWT-токена:
 
@@ -91,7 +96,7 @@ curl -X GET "http://localhost:8000/history" \
 Ожидаемый ответ:
 
 ```json
-{"predictions":["Prediction(id=1, input={'home_over_away_wins_diff_10': -3, 'form_5_diff': -4, 'form_15_diff': 1, 'last_home_matches_count_diff': 2, 'days_off_diff': -1, 'is_last_season_champion_diff': 1}, prediction=1, prediction_date=2025-12-19 00:33:03.179709)",...]}
+{"predictions":["Prediction(id=1, input={'home_over_away_wins_diff_10': -3, 'form_5_diff': -4, 'form_15_diff': 1, 'last_home_matches_count_diff': 2, 'days_off_diff': -1, 'is_last_season_champion_diff': 1, 'home_team_abbreaviation': 'LAL', 'away_team_abbreaviation': 'RMD'}, prediction=Invalid team abbreaviations, prediction_date=2026-06-16 19:46:33.280567)","Prediction(id=2, input={'home_over_away_wins_diff_10': -3, 'form_5_diff': -4, 'form_15_diff': 1, 'last_home_matches_count_diff': 2, 'days_off_diff': -1, 'is_last_season_champion_diff': 1, 'home_team_abbreaviation': 'LAL', 'away_team_abbreaviation': 'CIN'}, prediction=LAL will win, prediction_date=2026-06-16 19:47:13.372872)",...]}
 ```
 
 - Удалить историю:
@@ -120,6 +125,6 @@ curl -X GET "http://localhost:8000/stats" \
     "50 quantile": "0.005570s",
     "95 quantile": "0.005570s",
     "99 quantile": "0.005570s",
-    "mena req length" :164.0
+    "mean req length" :164.0
 }
 ```
