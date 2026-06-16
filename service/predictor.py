@@ -12,7 +12,7 @@ with open('abbr_id_mapper.csv', 'r') as f:
 with open('current_data.csv', 'r') as f:
     current_data = pd.read_csv(f)
 
-with open('predictor.pkl', 'rb') as f:
+with open('predictor_new.pkl', 'rb') as f:
     predictor = pickle.load(f)
 
 def get_prediction(data: dict):
