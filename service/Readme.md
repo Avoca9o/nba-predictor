@@ -55,17 +55,9 @@ uvicorn main:app --reload
 
 - Получение предсказания:
 ```bash
-curl 'http://127.0.0.1:8000/forward' \
--X POST \
--d 'curl 'http://127.0.0.1:8000/forward' -vvv \
+curl 'http://127.0.0.1:8000/forward' -vvv \
 -X POST \
 -d '{
-  "home_over_away_wins_diff_10": -3,
-  "form_5_diff": -4,
-  "form_15_diff": 1,
-  "last_home_matches_count_diff": 2,
-  "days_off_diff": -1,
-  "is_last_season_champion_diff": 1, 
   "home_team_abbreaviation": "LAL",
   "away_team_abbreaviation": "CIN"
 }'
