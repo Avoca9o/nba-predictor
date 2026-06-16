@@ -55,7 +55,7 @@ uvicorn main:app --reload
 
 - Получение предсказания:
 ```bash
-curl 'http://127.0.0.1:8000/forward' -vvv \
+curl 'http://127.0.0.1:8000/forward' \
 -X POST \
 -d '{
   "home_team_abbreaviation": "LAL",
@@ -88,7 +88,7 @@ curl -X GET "http://localhost:8000/history" \
 Ожидаемый ответ:
 
 ```json
-{"predictions":["Prediction(id=1, input={'home_over_away_wins_diff_10': -3, 'form_5_diff': -4, 'form_15_diff': 1, 'last_home_matches_count_diff': 2, 'days_off_diff': -1, 'is_last_season_champion_diff': 1, 'home_team_abbreaviation': 'LAL', 'away_team_abbreaviation': 'RMD'}, prediction=Invalid team abbreaviations, prediction_date=2026-06-16 19:46:33.280567)","Prediction(id=2, input={'home_over_away_wins_diff_10': -3, 'form_5_diff': -4, 'form_15_diff': 1, 'last_home_matches_count_diff': 2, 'days_off_diff': -1, 'is_last_season_champion_diff': 1, 'home_team_abbreaviation': 'LAL', 'away_team_abbreaviation': 'CIN'}, prediction=LAL will win, prediction_date=2026-06-16 19:47:13.372872)",...]}
+{"predictions":["Prediction(id=1, input={'home_over_away_wins_diff_10': -3, 'form_5_diff': -4, 'form_15_diff': 1, 'last_home_matches_count_diff': 2, 'days_off_diff': -1, 'is_last_season_champion_diff': 1, 'home_team_abbreaviation': 'LAL', 'away_team_abbreaviation': 'CIN'}, prediction=LAL will win, prediction_date=2026-06-16 22:21:17.847178)","Prediction(id=2, input={'home_over_away_wins_diff_10': -3, 'form_5_diff': -4, 'form_15_diff': 1, 'last_home_matches_count_diff': 2, 'days_off_diff': -1, 'is_last_season_champion_diff': 1, 'home_team_abbreaviation': 'LAL', 'away_team_abbreaviation': 'CIN'}, prediction=LAL will win, prediction_date=2026-06-16 22:21:35.555841)","Prediction(id=3, input={'home_over_away_wins_diff_10': -3, 'form_5_diff': -4, 'form_15_diff': 1, 'last_home_matches_count_diff': 2, 'days_off_diff': -1, 'is_last_season_champion_diff': 1, 'home_team_abbreaviation': 'LAL', 'away_team_abbreaviation': 'CIN'}, prediction=LAL will win, prediction_date=2026-06-16 22:21:36.474957)","Prediction(id=4, input={'home_team_abbreaviation': 'LAL', 'away_team_abbreaviation': 'CIN'}, prediction=LAL will win, prediction_date=2026-06-16 22:33:51.935649)","Prediction(id=5, input={'home_team_abbreaviation': 'LAL', 'away_team_abbreaviation': 'CIN'}, prediction=LAL will win, prediction_date=2026-06-16 22:40:10.885765)",...]}
 ```
 
 - Удалить историю:
